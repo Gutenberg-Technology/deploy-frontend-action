@@ -17,10 +17,10 @@ inputs:
   aws-secret-access-key:
     description: 'AWS secret access key'
     required: true
-  bucket-name:
+  aws-bucket-name:
     description: 'S3 bucket name'
     required: true
-  cloudfront-distribution-id:
+  aws-cloudfront-distribution-id:
     description: 'Cloudfront distribution id'
     required: true
 
@@ -34,3 +34,9 @@ runs:
         aws-access-key-id: ${{ inputs.aws-access-key-id }}
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
+
+    - name: ls composite
+      run: |
+        ls -la
+      shell: bash
+      
