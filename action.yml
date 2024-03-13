@@ -4,8 +4,13 @@ author: 'Gutenberg Technology'
 
 
 inputs:
-  artifact-name:
-    description: 'Artifact name'
+  invalidation-path:
+    type: string
+    description: "Path to invalidate on CloudFront"
+    default: "/*"
+    required: false
+  folder-to-upload:
+    description: 'Folder to upload in the artifact'
     required: true
   aws-region:
     description: 'AWS region'
@@ -35,8 +40,19 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
 
-    - name: ls composite
-      run: |
-        ls -la
-      shell: bash
-      
+    - name: 'tree'
+      run: pwd && tree -L 4
+      shell: bash   
+    
+    
+    - name: Deploy to S3
+      uses: reggionick/s3-deploy@v4
+      with:
+        folder: ${{ inputs.folder-to-upload }}
+        bucket: ${{ inputs.aws-bucket-name }}
+        bucket-region: ${{ inputs.aws-region }}
+        dist-id: ${{ inputs.aws-cloudfront-distribution-id }}
+        invalidation: ${{ inputs.invalidation-path }}
+        delete-removed: true
+        private: true
+        files-to-include: "**"
