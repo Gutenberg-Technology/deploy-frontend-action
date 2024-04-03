@@ -42,17 +42,40 @@ runs:
 
     - name: 'tree'
       run: pwd && tree -L 4
-      shell: bash   
+      shell: bash  
     
+    - name: Sync to S3
+      run: |
+        SYNC_OUTPUT=$(aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --only-show-errors)
+        echo "SYNC_OUTPUT=$SYNC_OUTPUT" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Use SYNC_OUTPUT
+      run: echo "S3 Sync output is ${{ env.SYNC_OUTPUT }}"
+      shell: bash
+
+    - name: Creation Invalidation
+      id: create_invalidation_id
+      run: |
+        INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --paths ${{ inputs.invalidation-path }} | jq '.Invalidation.Id')
+        echo "INVALIDATION_ID=$INVALIDATION_ID" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Use INVALIDATION_ID
+      run: echo "Invalidation ID is ${{ env.INVALIDATION_ID }}"
+      shell: bash
+
+    - name: Wait Invalidation status
+      id: wait_invalidation_status
+      run: aws cloudfront wait invalidation-completed --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --id ${{ env.INVALIDATION_ID }}
+      shell: bash
+
+    - name: Check Invalidation status
+      run: |
+        INVALIDATION_STATUS=$(aws cloudfront get-invalidation --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --id ${{ env.INVALIDATION_ID }})
+        echo "INVALIDATION_STATUS=$INVALIDATION_STATUS" >> $GITHUB_ENV
+      shell: bash
     
-    - name: Deploy to S3
-      uses: reggionick/s3-deploy@v4
-      with:
-        folder: ${{ inputs.folder-to-upload }}
-        bucket: ${{ inputs.aws-bucket-name }}
-        bucket-region: ${{ inputs.aws-region }}
-        dist-id: ${{ inputs.aws-cloudfront-distribution-id }}
-        invalidation: ${{ inputs.invalidation-path }}
-        delete-removed: true
-        private: true
-        files-to-include: "**"
+    - name: Use INVALIDATION_STATUS
+      run: echo "Invalidation status is ${{ env.INVALIDATION_STATUS }}"
+      shell: bash
