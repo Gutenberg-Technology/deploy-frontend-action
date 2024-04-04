@@ -54,8 +54,8 @@ runs:
 
     - name: Sync to S3
       run: |
-        SYNC_OUTPUT=$(aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --exact-timestamps --delete --region ${{ inputs.aws-region }})
-        echo "SYNC_OUTPUT=$SYNC_OUTPUT" >> $GITHUB_ENV
+        SYNC_OUTPUT_TMP=$(aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }})
+        echo "SYNC_OUTPUT=$SYNC_OUTPUT_TMP" >> $GITHUB_ENV
       shell: bash
 
     - name: Use SYNC_OUTPUT
