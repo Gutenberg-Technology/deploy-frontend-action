@@ -54,17 +54,21 @@ runs:
 
     - name: Sync to S3
       run: |
-        aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }} > sync_output.txt
+        aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }}
       shell: bash
 
-    - name: Use SYNC_OUTPUT
-      run: cat sync_output.txt
+    - name: Stop if sync failed
+      run: |
+        if [ $? -ne 0 ]; then
+          echo "Sync failed"
+          exit 1
+        fi
       shell: bash
 
     - name: Creation Invalidation
       id: create_invalidation_id
       run: |
-        INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --paths ${{ inputs.invalidation-path }} | jq '.Invalidation.Id')
+        INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --paths \"${{ inputs.invalidation-path }}\" | jq '.Invalidation.Id')
         echo "INVALIDATION_ID=$INVALIDATION_ID" >> $GITHUB_ENV
       shell: bash
 
