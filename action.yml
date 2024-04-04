@@ -54,12 +54,12 @@ runs:
 
     - name: Sync to S3
       run: |
-        aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }}
+        aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }} > sync_output.txt
       shell: bash
 
-    # - name: Use SYNC_OUTPUT
-    #   run: echo "S3 Sync output is ${{ env.SYNC_OUTPUT }}"
-    #   shell: bash
+    - name: Use SYNC_OUTPUT
+      run: cat sync_output.txt
+      shell: bash
 
     - name: Creation Invalidation
       id: create_invalidation_id
