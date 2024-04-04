@@ -56,7 +56,7 @@ runs:
     - name: Creation Invalidation
       id: create_invalidation_id
       run: |
-        INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --paths \"${{ inputs.invalidation-path }}\" | jq '.Invalidation.Id')
+        INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --paths "${{ inputs.invalidation-path }}" | jq '.Invalidation.Id')
         echo "INVALIDATION_ID=$INVALIDATION_ID" >> $GITHUB_ENV
       shell: bash
 
