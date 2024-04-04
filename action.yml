@@ -48,6 +48,10 @@ runs:
       run: pwd && tree -Lah 4
       shell: bash  
     
+    - name: 'List S3 bucket'
+      run: aws s3 ls s3://${{ inputs.aws-bucket-name }} --region ${{ inputs.aws-region }}
+      shell: bash
+
     - name: Sync to S3
       run: |
         SYNC_OUTPUT=$(aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }})
