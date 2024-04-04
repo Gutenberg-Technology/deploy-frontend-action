@@ -54,13 +54,12 @@ runs:
 
     - name: Sync to S3
       run: |
-        SYNC_OUTPUT_TMP=$(aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }})
-        echo "SYNC_OUTPUT=$SYNC_OUTPUT_TMP" >> $GITHUB_ENV
+        aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }}
       shell: bash
 
-    - name: Use SYNC_OUTPUT
-      run: echo "S3 Sync output is ${{ env.SYNC_OUTPUT }}"
-      shell: bash
+    # - name: Use SYNC_OUTPUT
+    #   run: echo "S3 Sync output is ${{ env.SYNC_OUTPUT }}"
+    #   shell: bash
 
     - name: Creation Invalidation
       id: create_invalidation_id
