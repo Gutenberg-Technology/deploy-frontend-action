@@ -40,6 +40,10 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
 
+    - name: 'aws cli version'
+      run: aws --version
+      shell: bash  
+
     - name: 'tree'
       run: pwd && tree -Lah 4
       shell: bash  
