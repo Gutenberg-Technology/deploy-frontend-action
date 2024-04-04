@@ -40,18 +40,6 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
 
-    - name: 'aws cli version'
-      run: aws --version
-      shell: bash  
-
-    - name: 'tree'
-      run: pwd && tree -Lah 4
-      shell: bash  
-    
-    - name: 'List S3 bucket'
-      run: aws s3 ls s3://${{ inputs.aws-bucket-name }} --region ${{ inputs.aws-region }}
-      shell: bash
-
     - name: Sync to S3
       run: |
         aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }}
@@ -70,10 +58,6 @@ runs:
       run: |
         INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id ${{ inputs.aws-cloudfront-distribution-id }} --paths \"${{ inputs.invalidation-path }}\" | jq '.Invalidation.Id')
         echo "INVALIDATION_ID=$INVALIDATION_ID" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Use INVALIDATION_ID
-      run: echo "Invalidation ID is ${{ env.INVALIDATION_ID }}"
       shell: bash
 
     - name: Wait Invalidation status
