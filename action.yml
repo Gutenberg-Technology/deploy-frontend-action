@@ -40,10 +40,6 @@ runs:
         aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
         aws-region: ${{ inputs.aws-region }}
 
-    - name: List files
-      run: pwd && tree -Lah 4
-      shell: bash
-
     - name: Sync to S3
       run: |
         aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }}
