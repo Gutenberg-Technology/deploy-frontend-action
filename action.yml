@@ -25,6 +25,10 @@ inputs:
   aws-bucket-name:
     description: 'S3 bucket name'
     required: true
+  aws-bucket-folder:
+    description: 'S3 bucket folder'
+    required: false
+    default: ''
   aws-cloudfront-distribution-id:
     description: 'Cloudfront distribution id'
     required: true
@@ -42,7 +46,7 @@ runs:
 
     - name: Sync to S3
       run: |
-        aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }} --delete --region ${{ inputs.aws-region }}
+        aws s3 sync ${{ inputs.folder-to-upload }} s3://${{ inputs.aws-bucket-name }}/${{ inputs.aws-bucket-folder }} --delete --region ${{ inputs.aws-region }}
       shell: bash
 
     - name: Stop if sync failed
