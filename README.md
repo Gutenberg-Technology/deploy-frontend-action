@@ -36,11 +36,12 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'us-east-1'
+          aws-region: us-east-1
 
       - uses: Gutenberg-Technology/deploy-frontend-action@v1.0.0
         with:
           folder-to-upload: /path/to/local/folder
+          aws-region: us-east-1
           aws-cloudfront-distribution-id: QWERTYUIOP123456
           aws-bucket-name: my-bucket-name
           aws-bucket-folder: /path/to/s3/folder
